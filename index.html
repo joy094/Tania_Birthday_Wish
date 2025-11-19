@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="bn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎂 Tania-এর জন্য বিশেষ উপহার 💖</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* CSS Styling */
+      :root {
+        --primary-color: #ff69b4; /* Hot Pink */
+        --secondary-color: #ffd700; /* Gold */
+        --background-color: #1a1a2e; /* Dark Blue/Purple */
+        --text-color: #ffffff;
+      }
+
+      body {
+        font-family: "Baloo Da 2", sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--background-color) 0%,
+          #0f0f18 100%
+        );
+        color: var(--text-color);
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+        overflow: hidden;
+        transition: background-color 0.5s;
+      }
+
+      #container {
+        padding: 30px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        max-width: 90%;
+      }
+
+      h1 {
+        color: var(--secondary-color);
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+        animation: pulse 2s infinite;
+      }
+
+      #current-time,
+      #countdown-display {
+        font-size: 4em;
+        font-weight: 700;
+        margin: 20px 0;
+        color: var(--primary-color);
+        text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+        display: block; /* Ensure it's on a new line */
+      }
+
+      #countdown-display {
+        font-size: 8em;
+        color: #ff4500; /* OrangeRed for final count */
+        display: none; /* Initially hidden */
+      }
+
+      #message {
+        font-size: 3em;
+        color: var(--secondary-color);
+        margin-top: 30px;
+        display: none; /* Initially hidden */
+        animation: popOut 1s forwards;
+        line-height: 1.2;
+      }
+
+      /* Birthday Celebration Styles */
+      .celebration-bg {
+        background: radial-gradient(
+          circle at center,
+          #ff007f,
+          #8e0033
+        ); /* Deep Pink */
+        transition: background-color 0.5s;
+      }
+
+      .celebration-msg {
+        font-size: 4em !important;
+        color: #ffffff;
+        text-shadow: 0 0 20px #ffd700, 0 0 30px #ff007f;
+      }
+
+      /* Animations */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes popOut {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        80% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h1 id="header-text" class="bangla">তানিয়ার জন্মদিনের জন্য আর বাকি...</h1>
+      <span id="current-time">00:00:00</span>
+      <span id="countdown-display">10</span>
+      <div id="message">
+        <span class="emoji">💖</span> **Happy Birthday Tania Afroz Nishi!**
+        <span class="emoji">🎉</span><br />
+        <span style="font-size: 0.5em; display: block; margin-top: 10px"
+          >Wish you all the happiness in the world!</span
+        >
+      </div>
+    </div>
+
+    <audio id="birthday-sound" src="./birthday_chime.mp3.mp3" preload="auto"></audio>
+
+    <script>
+      // JavaScript Logic
+      const currentTimeSpan = document.getElementById("current-time");
+      const countdownDisplay = document.getElementById("countdown-display");
+      const messageDiv = document.getElementById("message");
+      const container = document.getElementById("container");
+      const headerText = document.getElementById("header-text");
+      const birthdaySound = document.getElementById("birthday-sound");
+      const birthdayTarget = new Date();
+
+      // 🎯 টার্গেট সেট করা: আগামীকাল রাত 12:00:00 (মধ্যরাত)
+      // এখন রাত 7:47 PM. তাই কালকের দিনটি হবে বর্তমান দিনের পরের দিন।
+      birthdayTarget.setDate(birthdayTarget.getDate() + 1);
+      birthdayTarget.setHours(0, 0, 0, 0); // 00:00:00 (মধ্যরাত)
+
+      function updateTimer() {
+        const now = new Date();
+        const distance = birthdayTarget - now;
+
+        // সময় শেষ হলে
+        if (distance < 0) {
+          clearInterval(timerInterval);
+          celebrateBirthday();
+          return;
+        }
+
+        // শেষ ১০ সেকেন্ডের কাউন্টডাউন
+        if (distance <= 10000) {
+          // শেষ দশ সেকেন্ডের মধ্যে
+          const seconds = Math.floor(distance / 1000);
+
+          currentTimeSpan.style.display = "none"; // বর্তমান সময় লুকানো
+          countdownDisplay.style.display = "block"; // কাউন্টডাউন দেখানো
+          headerText.textContent = "আর মাত্র...";
+          countdownDisplay.textContent = seconds;
+
+          if (distance < 1000) {
+            // 0 সেকেন্ডে পৌঁছালে
+            clearInterval(timerInterval);
+            celebrateBirthday();
+          }
+        } else {
+          // স্বাভাবিক কাউন্টডাউন
+          const totalSeconds = Math.floor(distance / 1000);
+          const days = Math.floor(totalSeconds / (3600 * 24));
+          const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+          const minutes = Math.floor((totalSeconds % 3600) / 60);
+          const seconds = Math.floor(totalSeconds % 60);
+
+          // সুন্দর ফরমেটে ডিসপ্লে
+          const timeString = `${days > 0 ? days + " দিন, " : ""}${hours
+            .toString()
+            .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+
+          currentTimeSpan.textContent = timeString;
+          countdownDisplay.style.display = "none";
+          currentTimeSpan.style.display = "block";
+        }
+      }
+
+      function celebrateBirthday() {
+        // ডিজাইন পরিবর্তন
+        document.body.classList.add("celebration-bg");
+        container.style.opacity = "0";
+        container.style.transition = "opacity 1s";
+
+        setTimeout(() => {
+          container.style.display = "none";
+
+          // মূল মেসেজ ডিসপ্লে
+          messageDiv.style.display = "block";
+          messageDiv.classList.add("celebration-msg");
+          document.body.appendChild(messageDiv);
+
+          // সাউন্ড বাজানো (ইউজার ইন্টারঅ্যাকশনের পর অটোপ্লে কাজ করবে)
+          try {
+            birthdaySound.play();
+          } catch (e) {
+            console.log(
+              "Audio playback failed. User interaction might be required."
+            );
+          }
+
+          // কনফেটি ইফেক্ট যুক্ত করা (একটি লাইব্রেরি ব্যবহার করা যেতে পারে, তবে সহজ উপায়ে)
+          createConfetti();
+        }, 1000); // 1 সেকেন্ড পরে ডিসপ্লে পরিবর্তন
+      }
+
+      function createConfetti() {
+        // এই ফাংশনটি কনফেটি ইফেক্টের জন্য। এটি একটি লাইব্রেরি ছাড়া সহজে করা কঠিন।
+        // সহজ একটি অ্যানিমেশন দেখানো হলো।
+        const colors = [
+          "#f44336",
+          "#e91e63",
+          "#9c27b0",
+          "#673ab7",
+          "#3f51b5",
+          "#2196f3",
+          "#00bcd4",
+          "#009688",
+          "#4caf50",
+          "#8bc34a",
+          "#ffeb3b",
+          "#ffc107",
+          "#ff9800",
+          "#ff5722",
+        ];
+        const confettiContainer = document.createElement("div");
+        confettiContainer.classList.add("confetti");
+        document.body.appendChild(confettiContainer);
+
+        for (let i = 0; i < 100; i++) {
+          const piece = document.createElement("div");
+          piece.style.width = "10px";
+          piece.style.height = "10px";
+          piece.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          piece.style.position = "absolute";
+          piece.style.left = Math.random() * 100 + "vw";
+          piece.style.top = -(Math.random() * 100) + "vh";
+          piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+          // একটি সহজ অ্যানিমেশন
+          piece.animate(
+            [
+              {
+                transform: piece.style.transform + " translateY(0)",
+                opacity: 1,
+              },
+              {
+                transform:
+                  piece.style.transform +
+                  ` translateY(150vh) rotate(${Math.random() * 720}deg)`,
+                opacity: 0.5,
+              },
+            ],
+            {
+              duration: Math.random() * 5000 + 5000,
+              easing: "linear",
+              delay: Math.random() * 2000,
+              iterations: Infinity,
+            }
+          );
+          confettiContainer.appendChild(piece);
+        }
+      }
+
+      // প্রতি 100 মিলিসেকেন্ডে টাইমার আপডেট হবে, যাতে 10 সেকেন্ডের কাউন্টডাউনটি মসৃণ হয়।
+      const timerInterval = setInterval(updateTimer, 100);
+
+      // পেজ লোড হওয়ার সাথে সাথে একবার আপডেট
+      updateTimer();
+
+      // নোট: মোবাইলে বা ব্রাউজারে অডিও প্লে করার জন্য ইউজারকে স্ক্রিনে একবার ক্লিক করতে হতে পারে।
+      document.body.addEventListener(
+        "click",
+        () => {
+          // এটি অডিও প্লেব্যাকের একটি সেফটি মেজার, যাতে ক্লিক করলেই সাউন্ড রেডি থাকে।
+          birthdaySound.muted = false;
+        },
+        { once: true }
+      );
+    </script>
+  </body>
+</html>
