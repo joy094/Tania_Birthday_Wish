@@ -314,8 +314,12 @@
       document.body.addEventListener(
         "click",
         () => {
-          // এটি অডিও প্লেব্যাকের একটি সেফটি মেজার, যাতে ক্লিক করলেই সাউন্ড রেডি থাকে।
-          birthdaySound.muted = false;
+          birthdaySound.muted = true;
+          birthdaySound.play().then(() => {
+            birthdaySound.pause();
+            birthdaySound.muted = false;
+            birthdaySound.currentTime = 0;
+          });
         },
         { once: true }
       );
